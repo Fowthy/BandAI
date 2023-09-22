@@ -61,7 +61,7 @@ const DashboardPage = () => {
 					Explore the power of AI
 				</h2>
 				<p className="text-muted-foreground font-light text-sm md:text-lg text-center">
-					Rizzii is a platform that allows you to generate music, videos,
+					RizBandAI is a platform that allows you to generate music, videos,
 					and code using the power of AI.
 				</p>
 			</div>

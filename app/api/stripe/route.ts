@@ -43,8 +43,8 @@ export async function GET() {
           price_data: {
             currency: "USD",
             product_data: {
-              name: "Rizzii Pro",
-              description: "Rizzii Pro",
+              name: "BandAI Pro",
+              description: "BandAI Pro",
             },
             unit_amount: 2000,
             recurring: {

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Music } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -23,6 +23,7 @@ const MusicPage = () => {
   const router = useRouter();
   const proModal = useProModal();
   const [music, setMusic] = useState("");
+  const [selectedFile, setSelectedFile] = useState<Blob | "">("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,12 +35,17 @@ const MusicPage = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       setMusic("");
-      const response = await axios.post("/api/music", values);
+      const formData = new FormData();      
+      formData.append("audio", selectedFile);
+  
+      const response = await axios.post("/api/music", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setMusic(response.data.audio);
-
       form.reset();
     } catch (error: any) {
       console.log(error);
@@ -64,9 +70,10 @@ const MusicPage = () => {
       />
       <div className="px-4 lg:px-8">
         <div>
-          <Form {...form}>
+          <Form {...form} >
             <form
               onSubmit={form.handleSubmit(onSubmit)}
+              encType="multipart/form-data"
               className="rounded-lg border w-full p-4 px-3 md:px-6 focus-within:shadow-sm grid grid-cols-12 gap-2"
             >
               <FormField
@@ -75,17 +82,26 @@ const MusicPage = () => {
                   <FormItem className="col-span-12 lg:col-span-10">
                     <FormControl className="m-0 p-0">
                       <Input
+                        type="file"
+                        accept="audio/*"
                         {...field}
                         placeholder="Start typing here..."
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
+                        onChange={(e) => {
+                          e.preventDefault()
+                          field.onChange(e);
+                          if (e.target.files && e.target.files.length > 0) {
+                            setSelectedFile(e.target.files[0]);
+                          }
+                        }}
                       />
                     </FormControl>
                   </FormItem>
                 )}
-              />
-              <Button className="col-span-12 lg:col-span-2 w-full" disabled={isLoading}>
-                Generate
+                />
+              <Button className="col-span-12 lg:col-span-2 w-full" disabled={isLoading} type="submit">
+                Get 
               </Button>
             </form>
           </Form>

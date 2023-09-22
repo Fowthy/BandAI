@@ -10,7 +10,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Rizzii AI",
+  title: "BandAI",
   description: "an AI platform for everything!",
 };
 
