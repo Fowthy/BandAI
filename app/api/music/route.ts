@@ -3,7 +3,9 @@ import { checkSubscription } from "@/lib/subscription";
 import { auth } from "@clerk/nextjs";
 import { NextResponse, NextRequest } from "next/server";
 import Replicate from "replicate";
-import { writeFile } from 'fs/promises'
+import { writeFile } from 'fs/promises';
+import busboy from 'busboy';
+import { NextApiRequest, NextApiResponse } from "next";
 import multer from 'multer';
 
 const replicate = new Replicate({
@@ -15,42 +17,49 @@ export const config = {
     bodyParser: false, // Disabling Next.js' built-in body parser since we're using multer
   },
 };
-
-interface MulterRequest extends NextRequest {
-  file: any;
-}
-
 const storage = multer.memoryStorage(); // Store the file in memory
-const upload = multer({ storage: storage }).single('audio'); // 'audio' should match the key you used to append the file in FormData
+const upload = multer({ storage: storage });
 
-export async function POST(req: MulterRequest, res: NextResponse) {
+
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const { userId } = auth();
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
-
-    upload(req as any, res as any, async (err) => {
-      if (err) {
-        // return res.status(500).json({ error: err.message });
+    // const file = (await req.formData()).get('audio');
+      // console.log("FILE", file)
+  
+      // Function to get the audio file from req and send it to the response as an audio file
+      const sendAudioFile = async (req: NextRequest, res: NextResponse) => {
+        try {
+          const { userId } = auth();
+          if (!userId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+          }
+          const file = (await req.formData()).get('audio');
+          if (!file) {
+            return new NextResponse("No file found", { status: 400 });
+          }
+          const buffer = await (file as File);
+          console.log(buffer)
+          const response = await replicate.run("cjwbw/demucs:25a173108cff36ef9f80f854c162d01df9e6528be175794b81158fa03836d953", {
+            input: {
+              audio: buffer,
+            },
+          });
+          if (!response) {
+            console.error('Empty response from replicate.run');
+            return new NextResponse("No response from model", { status: 500 });
+          }
+        } catch (error) {
+          console.error("[MUSIC_ERROR]", error);
+          return new NextResponse("Internal Server Error", { status: 500 });
+        }
       }
-      console.log(req, 'req.file') 
-      const file = req.file;
-      // const data = await req.formData();
-      // const file: File | null = data.get('audio') as unknown as File;
-      
-      // if (!file) {
-      //   return NextResponse.json({ success: false });
-      // }
 
-      // const bytes = await file.arrayBuffer();
-      // const buffer = Buffer.from(bytes);
-      
-      // const path = `/tmp/${file.name}`;
-      // // let a = await writeFile(path, buffer)
-      // console.log('a???/');
-
-      console.log(file,typeof file, 'aaaaaa')
+      sendAudioFile(req, res);
+       
       const isAllowed = await checkApiLimit();
       const isPro = await checkSubscription();
       
@@ -58,23 +67,22 @@ export async function POST(req: MulterRequest, res: NextResponse) {
         return new NextResponse("API Limit Exceeded", { status: 403 });
       }
       
-      const response = await replicate.run("cjwbw/demucs:25a173108cff36ef9f80f854c162d01df9e6528be175794b81158fa03836d953", {
-        input: {
-          audio: req,
-        },
-      });
+      // const response = await replicate.run("cjwbw/demucs:25a173108cff36ef9f80f854c162d01df9e6528be175794b81158fa03836d953", {
+      //   input: {
+      //     audio: "buffer",
+      //   },
+      // });
       
-      if (!response) {
-        console.error('Empty response from replicate.run');
-        return new NextResponse("No response from model", { status: 500 });
-      }
+      // if (!response) {
+      //   console.error('Empty response from replicate.run');
+      //   return new NextResponse("No response from model", { status: 500 });
+      // }
       
       if (!isPro) {
         await increaseApiLimit();
       }
       
-      return NextResponse.json(response, { status: 200 });
-    })
+      return NextResponse.json("response", { status: 200 });
 
   } catch (error) {
     console.error("[MUSIC_ERROR]", error);

@@ -40,11 +40,7 @@ const MusicPage = () => {
       const formData = new FormData();      
       formData.append("audio", selectedFile);
   
-      const response = await axios.post("/api/music", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await axios.post("/api/music", formData);
       setMusic(response.data.audio);
       form.reset();
     } catch (error: any) {
