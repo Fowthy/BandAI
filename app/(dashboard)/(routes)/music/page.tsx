@@ -22,7 +22,7 @@ import { formSchema } from "./constants";
 const MusicPage = () => {
   const router = useRouter();
   const proModal = useProModal();
-  const [music, setMusic] = useState("");
+  const [music, setMusic] = useState([]);
   const [selectedFile, setSelectedFile] = useState<Blob | "">("");
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -36,12 +36,12 @@ const MusicPage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      setMusic("");
+      setMusic([]);
       const formData = new FormData();      
       formData.append("audio", selectedFile);
-  
+
       const response = await axios.post("/api/music", formData);
-      setMusic(response.data.audio);
+      setMusic(response.data);
       form.reset();
     } catch (error: any) {
       console.log(error);
@@ -109,11 +109,16 @@ const MusicPage = () => {
             </div>
           )}
           {!music && !isLoading && <Empty label="Start typing to generate music." />}
-          {music && (
-            <audio controls className="w-full mt-8">
-              <source src={music} />
-            </audio>
-          )}
+          {Object.entries(music).map(([instrument, url], index) => {
+              return (
+              <>
+                <label>{instrument}</label>
+                <audio controls className="w-full mt-8">
+                  <source src={url} />
+                </audio>
+              </>
+              )
+          })}
         </div>
       </div>
     </div>
