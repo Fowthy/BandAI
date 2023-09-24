@@ -58,8 +58,8 @@ const MusicPage = () => {
   return (
     <div>
       <Heading
-        title="Music Generation"
-        description="Our most advanced AI Music Generation model."
+        title="Music Separation"
+        description="Our most advanced AI Music Separation model."
         icon={Music}
         iconColor="text-emerald-500"
         bgColor="bg-emerald-500/10"

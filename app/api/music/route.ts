@@ -8,12 +8,6 @@ const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN!,
 });
 
-export const config = {
-  api: {
-    bodyParser: false, 
-  }
-};
-
 const getBuffer = async (readableStream: any) => {
   const chunks = [];
   for await (const chunk of readableStream) {
