@@ -9,7 +9,7 @@ function LandingPage() {
       <p>Very good projects</p>
 
 
-      <Link href="/dashboard/project1" className="p-2 w-full bg-red-400">
+      <Link href="/project1" className="p-2 w-full bg-red-400">
         Project 1
       </Link>
 

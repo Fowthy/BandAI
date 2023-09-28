@@ -21,45 +21,39 @@ const routes = [
     dropdown: "true"
   },
   {
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    href: "/dashboard",
-    color: "text-sky-500",
-  },
-  {
     label: "Conversation",
     icon: MessageSquare,
-    href: "/conversation",
+    href: "/project1/conversation",
     color: "text-violet-500",
   },
   {
     label: "Image Generation",
     icon: ImageIcon,
-    href: "/image",
+    href: "/project1/image",
     color: "text-pink-700",
   },
   {
     label: "Video Generation",
     icon: VideoIcon,
-    href: "/video",
+    href: "/project1/video",
     color: "text-orange-700",
   },
   {
     label: "Music Separation",
     icon: Music,
-    href: "/music",
+    href: "/project1/music",
     color: "text-emerald-500",
   },
   {
     label: "Code Generation",
     icon: Code,
-    href: "/code",
+    href: "/project1/code",
     color: "text-green-700",
   },
   {
     label: "Settings",
     icon: Settings,
-    href: "/settings",
+    href: "/project1/settings",
   },
 ];
 
