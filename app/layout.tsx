@@ -6,6 +6,7 @@ import CrispProvider from "@/components/crisp-provider";
 import { ModalProvider } from "@/components/modal-provider";
 import { ToasterProvider } from "@/components/toaster-provider";
 import "./globals.css";
+import Navbar from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ModalProvider />
           <ToasterProvider />
           <CrispProvider />
+          <Navbar />
+
           {children}
         </body>
       </html>

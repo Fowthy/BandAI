@@ -34,12 +34,15 @@ model UserProject {
   desc String @map("desc")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 model ProjectImage {
   id String @id @default(cuid()) @map("_id")
+  projectId String
   userId String @unique
-  image Blob @map("image")
+  imageUrl String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
