@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs";
 
 import prismadb from "./prismadb";
 
-export const createUserProject = async () => {
+export const createUserProject = async (messages: any) => {
   const { userId } = auth();
 
   if (!userId) {
@@ -14,35 +14,35 @@ export const createUserProject = async () => {
   //     userId,
   //   },
   // });
+  console.log(messages, 'messages')
 
-    await prismadb.userProject.create({
+    let results = await prismadb.userProject.create({
       data: {
         userId,
         name: "My Project",
         desc: "My Projectttt"
       },
     });
+    return results;
 };
 
 
 
-export const getUserProject = async () => {
+export const getUserProjects = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    return 0;
+    return null;
   }
-
-  const userApiLimit = await prismadb.userApiLimit.findUnique({
+  const projects = await prismadb.userProject.findMany({
     where: {
       userId,
-      id: "12345",
     },
   });
 
-  if (!userApiLimit) {
+  if (!projects) {
     return null;
   } else {
-    return userApiLimit;
+    return projects;
   }
 };

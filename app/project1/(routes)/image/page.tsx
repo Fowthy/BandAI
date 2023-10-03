@@ -39,7 +39,6 @@ const ImagePage = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
       setImages([]);
       const response = await axios.post("/api/image", values);
